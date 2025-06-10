@@ -1,31 +1,27 @@
+import java.io.Serial;
+
 public class Alimenticio extends Produto{
+    @Serial
+    private static final long serialVersionUID = 1L; //Ajuda a evitar erros em serialização e garante compatibilidade entre versões da classe.
+
     private String ingrediente;
-    private int quantidade;
 
-    public Alimenticio(String nomeProduto, String validadeProduto, float precoProduto, String ingrediente, int quantidade) {
-        super(nomeProduto, validadeProduto, precoProduto);
+    public Alimenticio(String nomeProduto, String validadeProduto, float precoProduto, int quantidade, String ingrediente) {
+        super(nomeProduto, validadeProduto, precoProduto, quantidade);
         this.ingrediente = ingrediente;
-        this.quantidade = quantidade;
-    }
-
-    @Override
-    public void exibirInformacao() {
-        System.out.print(", Ingrediente: " + ingrediente + ", Quantidade: " + quantidade);
     }
 
     public String getIngrediente() {
         return ingrediente;
     }
 
-    public int getQuantidade() {
-        return quantidade;
-    }
-
     public void setIngrediente(String ingrediente) {
         this.ingrediente = ingrediente;
     }
 
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
+    @Override
+    public String exibirInformacao() {
+        return String.format("Alimento: %s\nIngrediente: %s\nQuantidade: %d\nValidade: %s\nPreço: R$ %.2f",
+                getNomeProduto(), ingrediente, getQuantidade(), getValidadeProduto(), getPrecoProduto());
     }
 }
