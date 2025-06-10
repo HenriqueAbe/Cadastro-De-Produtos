@@ -29,6 +29,13 @@ public abstract class Produto implements Serializable {
         return this.precoProduto;
     }
 
+    public int getQuantidade() {
+        return this.quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
     public void setNomeProduto(String nomeProduto) {
         this.nomeProduto = nomeProduto;
     }
