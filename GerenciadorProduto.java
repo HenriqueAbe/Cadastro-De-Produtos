@@ -23,8 +23,8 @@ public class GerenciadorProduto {
         salvarProdutos();
     }
 
-    // Serializa toda a lista dentro de "produtos.txt"
-    private void salvarProdutos() {
+    // Serializa toda a lista dentro de "produtos.txt" public para outras classes conseguirem usar
+    public void salvarProdutos() {
         try (ObjectOutputStream oos =
                      new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
             oos.writeObject(produtos);

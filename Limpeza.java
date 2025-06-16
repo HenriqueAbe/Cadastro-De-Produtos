@@ -25,4 +25,3 @@ public class Limpeza extends Produto {
                 getNomeProduto(), getInstrucoesDeUso(), getQuantidade(), getValidadeProduto(), getPrecoProduto());
     }
 }
-

@@ -29,7 +29,7 @@ public class GerenciadorBotoes {
         informacao.addActionListener(this::acaoAjuda);
         addButton.addActionListener(this::acaoAdicionar);
 
-        //Adiciona Quantidade
+        //Adicionar Quantidade
         addQuantidadeButton.addActionListener(e -> {
             Produto selecionado = tela.getProdutoJList().getSelectedValue();
             if (selecionado == null) return;
@@ -44,13 +44,14 @@ public class GerenciadorBotoes {
                             return;
                         }
 
-                        if (selecionado instanceof Alimenticio) {
-                            Alimenticio alimento = (Alimenticio) selecionado;
+                        if (selecionado instanceof Alimenticio alimento) {
                             alimento.setQuantidade(alimento.getQuantidade() + qtdAdicionar);
-                        } else if (selecionado instanceof Limpeza) {
+                        } else {
                             Limpeza limpeza = (Limpeza) selecionado;
                             limpeza.setQuantidade(limpeza.getQuantidade() + qtdAdicionar);
                         }
+
+                        gerenciador.salvarProdutos();
 
                         tela.getProdutoJList().repaint();
                         tela.getInfoArea().setText(selecionado.exibirInformacao());
@@ -64,19 +65,95 @@ public class GerenciadorBotoes {
             }
         });
 
+        //Remover quantidade
+        removerButton.addActionListener(e -> {
+            Produto selecionado = tela.getProdutoJList().getSelectedValue();
+            if (selecionado == null) return;
+
+            if (selecionado instanceof Alimenticio || selecionado instanceof Limpeza) {
+                String input = JOptionPane.showInputDialog(tela, "Quantidade a remover:", "Remover Quantidade", JOptionPane.PLAIN_MESSAGE);
+                if (input != null) {
+                    try {
+                        int qtdRemover = Integer.parseInt(input);
+                        if (qtdRemover <= 0) {
+                            JOptionPane.showMessageDialog(tela, "A quantidade deve ser maior que zero.");
+                            return;
+                        }
+
+                        int quantidadeAtual;
+
+                        if (selecionado instanceof Alimenticio alimento) {
+                            quantidadeAtual = alimento.getQuantidade();
+
+                            if (qtdRemover > quantidadeAtual) {
+                                JOptionPane.showMessageDialog(tela, "Quantidade a remover maior que a disponível.");
+                                return;
+                            }
+
+                            int novaQuantidade = quantidadeAtual - qtdRemover;
+
+                            if (novaQuantidade == 0) {
+                                throw new EstoqueVazioException(alimento.getNomeProduto());
+                            }
+
+                            alimento.setQuantidade(novaQuantidade);
+
+                        } else {
+                            Limpeza limpeza = (Limpeza) selecionado;
+                            quantidadeAtual = limpeza.getQuantidade();
+
+                            if (qtdRemover > quantidadeAtual) {
+                                JOptionPane.showMessageDialog(tela, "Quantidade a remover maior que a disponível.");
+                                return;
+                            }
+
+                            int novaQuantidade = quantidadeAtual - qtdRemover;
+
+                            if (novaQuantidade == 0) {
+                                throw new EstoqueVazioException(limpeza.getNomeProduto());
+                            }
+
+                            limpeza.setQuantidade(novaQuantidade);
+                        }
+
+                        gerenciador.salvarProdutos(); // salva após alteração
+                        tela.getProdutoJList().repaint();
+                        tela.getInfoArea().setText(selecionado.exibirInformacao());
+
+                    } catch (EstoqueVazioException ex) {
+                        JOptionPane.showMessageDialog(tela, ex.getMessage());
+                        gerenciador.removerProduto(selecionado);
+                        tela.getModeloLista().removeElement(selecionado);
+                        tela.getInfoArea().setText("");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(tela, "Entrada inválida.");
+                    }
+                }
+            } else {
+                // Produto sem quantidade (por exemplo, não Alimenticio ou Limpeza)
+                gerenciador.removerProduto(selecionado);
+                tela.getModeloLista().removeElement(selecionado);
+                tela.getInfoArea().setText("");
+            }
+        });
+
         return botoesPanel;
     }
 
     private void acaoAjuda(ActionEvent e) {
         JOptionPane.showMessageDialog(tela,
-                "Como usar o Gerenciador de Produtos ?\n" +
-                        "[ Para adicionar novos produtos ], basta preencher os dados que estão em campo ao lado.\n" +
-                        "[ Para produtos existentes ], selecione o produto e clique em adicionar ou remover.");
+                """
+                        Como usar o Gerenciador de Produtos ?
+                        [ Para adicionar novos produtos ], basta preencher os dados que estão em campo ao lado.
+                        [ Para produtos existentes ], selecione o produto e clique em adicionar ou remover.""");
     }
 
     private void acaoAdicionar(ActionEvent e) {
         Produto p = gerenciadorCampos.criarProdutoAPartirCampos(tela.getTipoProdutoCombo().getSelectedItem().toString());
         if (p != null) {
+            if (p.getQuantidade() <= 0) {
+                JOptionPane.showMessageDialog(tela, "Quantidade não pode ser negativa", "Error", JOptionPane.PLAIN_MESSAGE);
+            }
             gerenciador.adicionarProduto(p);
             tela.getModeloLista().addElement(p);
             gerenciadorCampos.limparCampos();
