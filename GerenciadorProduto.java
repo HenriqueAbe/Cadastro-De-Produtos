@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class GerenciadorProduto {
-    private ArrayList<Produto> produtos;
+    private ArrayList<Produto> produtos; // 10. Coleção de objeto
     private static final String ARQUIVO = "produtos.txt";  // continua .txt
 
     public GerenciadorProduto() {
@@ -23,7 +23,7 @@ public class GerenciadorProduto {
         salvarProdutos();
     }
 
-    // Serializa toda a lista dentro de "produtos.txt" public para outras classes conseguirem usar
+    // Serializa toda a lista dentro de "produtos.txt" public para outras classes conseguirem usar | 14. Persistência de objetos.
     public void salvarProdutos() {
         try (ObjectOutputStream oos =
                      new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
@@ -40,8 +40,8 @@ public class GerenciadorProduto {
             return new ArrayList<>();  // sem arquivo, lista vazia
         }
 
-        try (ObjectInputStream ois =
-                     new ObjectInputStream(new FileInputStream(f))) {
+        //13. Leitura de arquivo
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
             return (ArrayList<Produto>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Erro ao carregar produtos: " + e.getMessage());

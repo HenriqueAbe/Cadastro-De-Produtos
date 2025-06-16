@@ -8,9 +8,9 @@ public class TelaAplicativo extends JFrame {
     private DefaultListModel<Produto> modeloLista;
     private JList<Produto> produtoJList;
     private JTextArea infoArea;
-    private GerenciadorProduto gerenciador;
-    private GerenciadorCampos gerenciadorCampos;
-    private GerenciadorBotoes gerenciadorBotoes;
+    private GerenciadorProduto gerenciador; //9. Relação de associação
+    private GerenciadorCampos gerenciadorCampos; //9. Relação de associação
+    private GerenciadorBotoes gerenciadorBotoes; //9. Relação de associação
 
     public TelaAplicativo() {
         super("Gerenciador de Produtos");
@@ -58,12 +58,14 @@ public class TelaAplicativo extends JFrame {
     }
 
     private void configurarListeners() {
+        //Atualiza campos de acordo com o tipo selecionado
         tipoProdutoCombo.addActionListener(e -> gerenciadorCampos.atualizarCampos(painelCampos, (String) tipoProdutoCombo.getSelectedItem()));
 
+        //Quando selecionado aparece suas informações na direita
         produtoJList.addListSelectionListener(e -> {
             Produto p = produtoJList.getSelectedValue();
             if (p != null) {
-                infoArea.setText(p.exibirInformacao());
+                infoArea.setText(p.exibirInformacao()); //8. Chamada Polimórfica
             }
         });
     }
