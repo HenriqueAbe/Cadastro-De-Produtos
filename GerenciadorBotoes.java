@@ -29,6 +29,41 @@ public class GerenciadorBotoes {
         informacao.addActionListener(this::acaoAjuda);
         addButton.addActionListener(this::acaoAdicionar);
 
+        //Adiciona Quantidade
+        addQuantidadeButton.addActionListener(e -> {
+            Produto selecionado = tela.getProdutoJList().getSelectedValue();
+            if (selecionado == null) return;
+
+            if (selecionado instanceof Alimenticio || selecionado instanceof Limpeza) {
+                String input = JOptionPane.showInputDialog(tela, "Quantidade a adicionar:", "Adicionar Quantidade", JOptionPane.PLAIN_MESSAGE);
+                if (input != null) {
+                    try {
+                        int qtdAdicionar = Integer.parseInt(input);
+                        if (qtdAdicionar <= 0) {
+                            JOptionPane.showMessageDialog(tela, "A quantidade deve ser maior que zero.");
+                            return;
+                        }
+
+                        if (selecionado instanceof Alimenticio) {
+                            Alimenticio alimento = (Alimenticio) selecionado;
+                            alimento.setQuantidade(alimento.getQuantidade() + qtdAdicionar);
+                        } else if (selecionado instanceof Limpeza) {
+                            Limpeza limpeza = (Limpeza) selecionado;
+                            limpeza.setQuantidade(limpeza.getQuantidade() + qtdAdicionar);
+                        }
+
+                        tela.getProdutoJList().repaint();
+                        tela.getInfoArea().setText(selecionado.exibirInformacao());
+
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(tela, "Entrada inválida.");
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(tela, "Esse tipo de produto não possui quantidade para ser adicionada.");
+            }
+        });
+
         return botoesPanel;
     }
 

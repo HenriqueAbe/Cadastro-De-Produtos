@@ -78,6 +78,11 @@ public class TelaAplicativo extends JFrame {
 
     // Getters para os componentes que precisam ser acessados por outras classes
 
+    //Para poder adicionar ou remover items
+    public JList<Produto> getProdutoJList() {
+        return produtoJList;
+    }
+
     public DefaultListModel<Produto> getModeloLista() {
         return modeloLista;
     }
